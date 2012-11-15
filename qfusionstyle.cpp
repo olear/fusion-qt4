@@ -1881,7 +1881,7 @@ void QFusionStyle::drawControl(ControlElement element, const QStyleOption *optio
             painter->setRenderHint(QPainter::Antialiasing, true);
             painter->translate(0.5, 0.5);
 
-            QColor tabFrameColor = option->palette.window().color();
+            QColor tabFrameColor = d->tabFrameColor(option->palette);
 
             QLinearGradient fillGradient(rect.topLeft(), rect.bottomLeft());
             QLinearGradient outlineGradient(rect.topLeft(), rect.bottomLeft());
