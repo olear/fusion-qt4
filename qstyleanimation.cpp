@@ -97,7 +97,7 @@ void QStyleAnimation::setStartTime(const QTime &time)
 
 void QStyleAnimation::updateTarget()
 {
-    QEvent event(QEvent::StyleAnimationUpdate);
+    QEvent event(QEvent::HoverEnter);
     QCoreApplication::sendEvent(target(), &event);
 }
 

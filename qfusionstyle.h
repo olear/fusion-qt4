@@ -100,6 +100,8 @@ public:
 protected:
     QFusionStyle(QFusionStylePrivate &dd);
 
+private:
+    Q_PRIVATE_SLOT(d_func(), void _q_removeAnimation())
 };
 
 #endif // QT_NO_STYLE_FUSION

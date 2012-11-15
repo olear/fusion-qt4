@@ -346,6 +346,45 @@ QFusionStylePrivate::QFusionStylePrivate()
     animationFps = 60;
 }
 
+QFusionStylePrivate::~QFusionStylePrivate()
+{
+    qDeleteAll(animations);
+}
+
+QList<const QObject*> QFusionStylePrivate::animationTargets() const
+{
+    return animations.keys();
+}
+
+QStyleAnimation * QFusionStylePrivate::animation(const QObject *target) const
+{
+    return animations.value(target);
+}
+
+void QFusionStylePrivate::startAnimation(QStyleAnimation *animation) const
+{
+    Q_Q(const QFusionStyle);
+    stopAnimation(animation->target());
+    q->connect(animation, SIGNAL(destroyed()), SLOT(_q_removeAnimation()), Qt::UniqueConnection);
+    animations.insert(animation->target(), animation);
+    animation->start();
+}
+
+void QFusionStylePrivate::stopAnimation(const QObject *target) const
+{
+    QStyleAnimation *animation = animations.take(target);
+    if (animation && animation->state() != QAbstractAnimation::Stopped)
+        animation->stop();
+}
+
+void QFusionStylePrivate::_q_removeAnimation()
+{
+    Q_Q(QFusionStyle);
+    QObject *animation = q->sender();
+    if (animation)
+        animations.remove(animation->parent());
+}
+
 /*!
     \class QFusionStyle
     \brief The QFusionStyle class provides a custom widget style
@@ -3581,5 +3620,7 @@ QPixmap QFusionStyle::standardPixmap(StandardPixmap standardPixmap, const QStyle
 }
 
 QT_END_NAMESPACE
+
+#include "moc_qfusionstyle.cpp"
 
 #endif // QT_NO_STYLE_FUSION || QT_PLUGIN

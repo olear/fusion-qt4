@@ -55,6 +55,7 @@
 
 #include "qcommonstyle.h"
 #include "qcommonstyle_p.h"
+#include "qstyleanimation_p.h"
 
 #ifndef QT_NO_STYLE_FUSION
 
@@ -66,6 +67,7 @@ class QFusionStylePrivate : public QCommonStylePrivate
 
 public:
     QFusionStylePrivate();
+    ~QFusionStylePrivate();
 
     // Used for grip handles
     QColor lightShade() const {
@@ -120,6 +122,17 @@ public:
         menuRightBorder      = 15, // right border on menus
         menuCheckMarkWidth   = 12  // checkmarks width on menus
     };
+
+    int animationFps;
+    void _q_removeAnimation();
+
+    QList<const QObject*> animationTargets() const;
+    QStyleAnimation* animation(const QObject *target) const;
+    void startAnimation(QStyleAnimation *animation) const;
+    void stopAnimation(const QObject *target) const;
+
+private:
+    mutable QHash<const QObject*, QStyleAnimation*> animations;
 };
 
 QT_END_NAMESPACE
