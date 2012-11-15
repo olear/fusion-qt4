@@ -42,7 +42,7 @@
 #ifndef QFUSIONSTYLE_H
 #define QFUSIONSTYLE_H
 
-#include <QtWidgets/qcommonstyle.h>
+#include <qcommonstyle.h>
 
 QT_BEGIN_HEADER
 
@@ -52,7 +52,7 @@ QT_BEGIN_NAMESPACE
 #if !defined(QT_NO_STYLE_FUSION)
 
 class QFusionStylePrivate;
-class Q_WIDGETS_EXPORT QFusionStyle : public QCommonStyle
+class QFusionStyle : public QCommonStyle
 {
     Q_OBJECT
     Q_DECLARE_PRIVATE(QFusionStyle)

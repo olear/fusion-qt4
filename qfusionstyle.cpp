@@ -1198,7 +1198,7 @@ void QFusionStyle::drawControl(ControlElement element, const QStyleOption *optio
     case CE_DockWidgetTitle:
         painter->save();
         if (const QStyleOptionDockWidget *dwOpt = qstyleoption_cast<const QStyleOptionDockWidget *>(option)) {
-            bool verticalTitleBar = dwOpt->verticalTitleBar;
+            bool verticalTitleBar = false;
 
             QRect titleRect = subElementRect(SE_DockWidgetTitleBarText, option, widget);
             if (verticalTitleBar) {
@@ -1308,7 +1308,7 @@ void QFusionStyle::drawControl(ControlElement element, const QStyleOption *optio
         painter->save();
         painter->setRenderHint(QPainter::Antialiasing, true);
         painter->translate(0.5, 0.5);
-        if (const QStyleOptionProgressBar *bar = qstyleoption_cast<const QStyleOptionProgressBar *>(option)) {
+        if (const QStyleOptionProgressBarV2 *bar = qstyleoption_cast<const QStyleOptionProgressBarV2 *>(option)) {
             bool vertical = false;
             bool inverted = false;
             bool indeterminate = (bar->minimum == 0 && bar->maximum == 0);
@@ -1393,16 +1393,16 @@ void QFusionStyle::drawControl(ControlElement element, const QStyleOption *optio
                 painter->drawRoundedRect(progressBar.adjusted(1, 1, -1, -1), 1, 1);
 
                 if (!indeterminate) {
-                    (const_cast<QFusionStylePrivate*>(d))->stopAnimation(option->styleObject);
+                    (const_cast<QFusionStylePrivate*>(d))->stopAnimation(widget);
                 } else {
                     highlightedGradientStartColor.setAlpha(120);
                     painter->setPen(QPen(highlightedGradientStartColor, 9.0));
                     painter->setClipRect(progressBar.adjusted(1, 1, -1, -1));
 #ifndef QT_NO_ANIMATION
-                if (QProgressStyleAnimation *animation = qobject_cast<QProgressStyleAnimation*>(d->animation(option->styleObject)))
+                if (QProgressStyleAnimation *animation = qobject_cast<QProgressStyleAnimation*>(d->animation(widget)))
                     step = animation->animationStep() % 22;
                 else
-                    (const_cast<QFusionStylePrivate*>(d))->startAnimation(new QProgressStyleAnimation(d->animationFps, option->styleObject));
+                    (const_cast<QFusionStylePrivate*>(d))->startAnimation(new QProgressStyleAnimation(d->animationFps, const_cast<QWidget*>(widget)));
 #endif
                 for (int x = progressBar.left() - rect.height(); x < rect.right() ; x += 22)
                     painter->drawLine(x + step, progressBar.bottom() + 1,
@@ -1413,7 +1413,7 @@ void QFusionStyle::drawControl(ControlElement element, const QStyleOption *optio
         painter->restore();
         break;
     case CE_ProgressBarLabel:
-        if (const QStyleOptionProgressBar *bar = qstyleoption_cast<const QStyleOptionProgressBar *>(option)) {
+        if (const QStyleOptionProgressBarV2 *bar = qstyleoption_cast<const QStyleOptionProgressBarV2 *>(option)) {
             QRect leftRect;
             QRect rect = bar->rect;
             QColor textColor = option->palette.text().color();
@@ -1837,9 +1837,7 @@ void QFusionStyle::drawControl(ControlElement element, const QStyleOption *optio
             painter->setRenderHint(QPainter::Antialiasing, true);
             painter->translate(0.5, 0.5);
 
-            QColor tabFrameColor = tab->features & QStyleOptionTab::HasFrame ?
-                        d->tabFrameColor(option->palette) :
-                        option->palette.window().color();
+            QColor tabFrameColor = option->palette.window().color();
 
             QLinearGradient fillGradient(rect.topLeft(), rect.bottomLeft());
             QLinearGradient outlineGradient(rect.topLeft(), rect.bottomLeft());
@@ -1967,7 +1965,7 @@ void QFusionStyle::drawComplexControl(ComplexControl control, const QStyleOption
             QRect checkBoxRect = proxy()->subControlRect(CC_GroupBox, option, SC_GroupBoxCheckBox, widget);
 
             if (groupBox->subControls & QStyle::SC_GroupBoxFrame) {
-                QStyleOptionFrame frame;
+                QStyleOptionFrameV3 frame;
                 frame.QStyleOption::operator=(*groupBox);
                 frame.features = groupBox->features;
                 frame.lineWidth = groupBox->lineWidth;
@@ -3525,7 +3523,7 @@ QRect QFusionStyle::subElementRect(SubElement sr, const QStyleOption *opt, const
         break;
     case SE_DockWidgetTitleBarText: {
         if (const QStyleOptionDockWidget *titlebar = qstyleoption_cast<const QStyleOptionDockWidget*>(opt)) {
-            bool verticalTitleBar = titlebar->verticalTitleBar;
+            bool verticalTitleBar = false;
             if (verticalTitleBar) {
                 r.adjust(0, 0, 0, -4);
             } else {
