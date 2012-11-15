@@ -178,6 +178,11 @@ static const char * const qt_titlebar_context_help[] = {
     "    ##    "};
 
 
+inline QPixmap styleCachePixmap(const QSize &size)
+{
+    return QPixmap(size);
+}
+
 static QColor mergedColors(const QColor &colorA, const QColor &colorB, int factor = 50)
 {
     const int maxFactor = 100;
