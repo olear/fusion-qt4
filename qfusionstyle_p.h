@@ -56,6 +56,7 @@
 #include "qcommonstyle.h"
 #include "qcommonstyle_p.h"
 #include "qstyleanimation_p.h"
+#include "private/qapplication_p.h"
 
 #ifndef QT_NO_STYLE_FUSION
 
@@ -85,8 +86,30 @@ public:
         return QColor(255, 255, 255, 30);
     }
 
+    // On mac we want a standard blue color used when the system palette is used
+    bool isMacSystemPalette(const QPalette &pal) const {
+        Q_UNUSED(pal);
+#ifdef Q_OS_MAC
+        const QPalette *themePalette = QApplicationPrivate::sys_pal;
+        if (themePalette->color(QPalette::Normal, QPalette::Highlight) ==
+            pal.color(QPalette::Normal, QPalette::Highlight) &&
+            themePalette->color(QPalette::Normal, QPalette::HighlightedText) ==
+            pal.color(QPalette::Normal, QPalette::HighlightedText))
+        return true;
+#endif
+        return false;
+    }
+
     QColor highlight(const QPalette &pal) const {
+        if (isMacSystemPalette(pal))
+            return QColor(60, 140, 230);
         return pal.color(QPalette::Active, QPalette::Highlight);
+    }
+
+    QColor highlightedText(const QPalette &pal) const {
+        if (isMacSystemPalette(pal))
+            return Qt::white;
+        return pal.color(QPalette::Active, QPalette::HighlightedText);
     }
 
     QColor outline(const QPalette &pal) const {
@@ -96,7 +119,7 @@ public:
     }
 
     QColor highlightedOutline(const QPalette &pal) const {
-        QColor highlightedOutline = pal.highlight().color().darker(125);
+        QColor highlightedOutline = highlight(pal).darker(125);
         if (highlightedOutline.value() > 160)
             highlightedOutline.setHsl(highlightedOutline.hue(), highlightedOutline.saturation(), 160);
         return highlightedOutline;
@@ -111,7 +134,7 @@ public:
     QColor buttonColor(const QPalette &pal) const {
         QColor buttonColor = pal.button().color();
         int val = qGray(buttonColor.rgb());
-        buttonColor = buttonColor.lighter(100 + qMax(0, (180- val)/6));
+        buttonColor = buttonColor.lighter(100 + qMax(1, (180 - val)/6));
         buttonColor.setHsv(buttonColor.hue(), buttonColor.saturation() * 0.75, buttonColor.value());
         return buttonColor;
     }
