@@ -3572,6 +3572,7 @@ QRect QFusionStyle::subElementRect(SubElement sr, const QStyleOption *opt, const
         break;
     case SE_DockWidgetTitleBarText: {
         if (const QStyleOptionDockWidget *titlebar = qstyleoption_cast<const QStyleOptionDockWidget*>(opt)) {
+            Q_UNUSED(titlebar);
             bool verticalTitleBar = false;
             if (verticalTitleBar) {
                 r.adjust(0, 0, 0, -4);
