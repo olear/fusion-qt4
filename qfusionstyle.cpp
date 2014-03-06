@@ -41,6 +41,7 @@
 
 #include "qfusionstyle.h"
 #include "qfusionstyle_p.h"
+#include "qfusionstylepixmaps_p.h"
 
 #if !defined(QT_NO_STYLE_FUSION) || defined(QT_PLUGIN)
 #include "qcommonstyle_p.h"
@@ -3629,7 +3630,39 @@ QPixmap QFusionStyle::standardPixmap(StandardPixmap standardPixmap, const QStyle
     }
 #endif //QT_NO_IMAGEFORMAT_XPM
 
-    return QCommonStyle::standardPixmap(standardPixmap, opt, widget);
+    QPixmap pixmap = QCommonStyle::standardPixmap(standardPixmap, opt, widget);
+
+    if(!pixmap.isNull())
+        return pixmap;
+
+#ifndef QT_NO_IMAGEFORMAT_XPM
+    switch (standardPixmap) {
+    case SP_TitleBarMenuButton:
+        return QPixmap(qt_menu_xpm);
+    case SP_TitleBarShadeButton:
+        return QPixmap(qt_shade_xpm);
+    case SP_TitleBarUnshadeButton:
+        return QPixmap(qt_unshade_xpm);
+    case SP_TitleBarMaxButton:
+        return QPixmap(qt_maximize_xpm);
+    case SP_TitleBarCloseButton:
+        return QPixmap(qt_close_xpm);
+    case SP_TitleBarContextHelpButton:
+        return QPixmap(qt_help_xpm);
+    case SP_MessageBoxInformation:
+        return QPixmap(information_xpm);
+    case SP_MessageBoxWarning:
+        return QPixmap(warning_xpm);
+    case SP_MessageBoxCritical:
+        return QPixmap(critical_xpm);
+    case SP_MessageBoxQuestion:
+        return QPixmap(question_xpm);
+    default:
+        break;
+    }
+#endif //QT_NO_IMAGEFORMAT_XPM
+
+    return QPixmap();
 }
 
 QT_END_NAMESPACE

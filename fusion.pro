@@ -23,6 +23,7 @@ SOURCES += \
 HEADERS += \
     qfusionstyle.h \
     qfusionstyle_p.h \
+    qfusionstylepixmaps_p.h \
     qstyleanimation_p.h \
     fusionstyleplugin.h
 	
